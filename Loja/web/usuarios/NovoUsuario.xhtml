@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html public "-//w3c//dtd html 4.01 Transiti>
+<html xmlns="http://www.w3.org/1999/xhtml">
+     
+          <head>
+             <title>Novo Usuário</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </head>
+    <h:body>
+        <div>TODO write content</div>
+    </h:head>
+    </h:body>
+    <h:body>
+    <h:form id="formPrincipal" >
+        <p:outputLabel id="campoNome"  value="Nome: "/>
+        <p:inputText value="#{novoUsuario.usuario.nome}" 
+                    required="true" requiredMessage="Nome obrigatório" maxlength="50" />
+        
+            <p/>
+            <p:commandButton value="Salvar" action="#{novoUsuario.inserirUsuario()}" update="@form" />
+            <p/>
+            <p:messages />
+           <h:link outcome="usuario/novoUsuario" value="Outra página" />
+           <p:datatable id="tabelaUsuarios" emptyMessage="Nenhum usuario cadastrado"
+                        resizableColumns="true" tableStyle="width:auto"
+                        var="user" value="#{usuarioGerenciar.usuarios}">
+               <p:column headerText="Id:" style="text-align:right">
+                <h:outputText value="#{user.id}" />
+               </p:column>
+               <p:column headerText="Nome:">
+                   <h:outputText value="#{user.nome}"/>
+               </p:column>
+               <p:column headerText="" style="text-align:center ">
+                   <p:commandLink value="editar"
+                                  action="#{usuarioGerenciar.preparaEditarUsuario(user)}"
+                                  onclick="PF('editarUsuarioDlg').show()"
+                                  update="@form, :formEditarUsuario"/>"
+               </p:column>
+                   <p:commandLink value="excluir" immediate="true"
+                                  action="#{usuarioGerenciar.excluirUsuario(user)}"
+                                  update="@form">
+                       <p:confirm header="Excluir" message="Você tem certeza que deseja excluir?"
+                                  icon="ui-icon-alert"/>
+                   </p:commandLink>
+               </p:column>
+           </p:datatable>
+           <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+               <p:outputPanel style="width: 100%; text-align:center " layout="block">
+                   <p:commandButton value="sim" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                   <p:commandButton value="não" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                    </p:outputPanel>
+                </p:confirmDialog>
+            </h:form>
+            <!-- novo aluno  -->
+            
+            <p:dialog closable="false" modal="true" header="Novo usuario" id="popupNovo"  
+                      widgetVar="popupNovo"  visible="#{usuarioGerenciar.mostraPopupNovo}"  >
+                <h:form id="formIncluirUsuario" >
+                    <h:panelGrid columns="2">
+                        <p:outputLabel value="Nome: "/>
+                        <p:inputText id="campoLogin" value="#{usuarioGerenciar.novo.nome}" 
+                                     maxlength="50" 
+                                     required="true" requiredMessage="Nome obrigatório" > 
+                        </p:inputText>
+                        <p:outputLabel value="Unidade: "/>
+                        <p:inputText value="#{usuarioGerenciar.novo.unidade}" maxlength="30"
+                                     required="true" requiredMessage="Unidade obrigatória"/>
+                    </h:panelGrid>
+                    <p:outputPanel style="width: 100%; text-align:center" layout="block">
+                        <p:commandButton value="Cancelar" action="#{usuarioGerenciar.fecharPopupNovo()}"
+                                         update=":popupNovo" immediate="true" />
+                        <p:commandButton value="Confirmar" action="#{usuarioGerenciar.inserirUsuario()}" 
+                                         update=":popupNovo, :formPrincipal"/>                           
+                    </p:outputPanel>
+                    <h:panelGrid columns="1">
+                        <p:messages showIcon="false" />
+                    </h:panelGrid>   
+                </h:form>
+            </p:dialog>
+            <p:outputLabel value="Cliente" />
+            <p:selectOneMenu id="comboCliente" converter="usuarioConverter"
+                             required="true" reuieredMessage="Selecione o cliente"
+                             value="alterarCliente.Cliente">
+            <f:selectItems value="alterarCliente.Cliente"
+                           var="cli"
+                           itemValue="#{cli}"
+                           itemLabel="#{cli.nome}"/>
+            </p:selectOneMenu>
+            <ui:include src="usuarioAlterar.xhtml" />
+        </h:body>
+    </f:view>
+    
+</html>
